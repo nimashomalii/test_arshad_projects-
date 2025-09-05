@@ -54,7 +54,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         'train' : [] , 
         'test' : []
     } 
-    for x , y in data_for_subject_dependet(overlap , time_len , emotion , label_method=output_dim ): 
+    for x , y in data_for_subject_dependet(overlap , time_len , emotion , output_dim , data_type , device ): 
         #Now create a model and train the model k fold cross validation and then the average of the results will be returned 
         fold_idx = 0 
         for (x_train , x_test , y_train , y_test) in k_fold_data_segmentation(x ,y , k): 
@@ -97,6 +97,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         accuracies_on_subjects['train'].append(np.max(train_acc.detach().cpu().numpy()))
         accuracies_on_subjects['test'].append(np.max(val_acc.detach().cpu().numpy()))
     return accuracies_on_subjects
+
 
 
 
