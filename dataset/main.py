@@ -56,8 +56,9 @@ def data_for_subject_dependet(overlap , time_len ,  emotion , label_method , dat
     extract_data.extract_data_file(file_id)
     sub_dep = dataset_for_subjet_dependet(overlap ,time_len , emotion , label_method)
     for person in range(23) : 
-        x , y = sub_dep.extract(file_path, data_type , person , test_size = 0.2 )
+        x , y = sub_dep.extract(file_path, data_type , person  )
         x = x.to(device)
         y = y.to(device)
         yield x , y
+
     extract_data.clean_extracted_data()
