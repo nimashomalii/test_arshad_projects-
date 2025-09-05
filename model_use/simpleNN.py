@@ -4,7 +4,7 @@ import os # os را برای چک کردن cuda اضافه کنید
 from models_structures.simpleNN import model
 from train import Trainer
 import random
-from kfold_validation import k_fold_data_segmentation
+from functions import k_fold_data_segmentation
 from  torch.utils.data import DataLoader , TensorDataset
 import numpy as np 
 
@@ -97,6 +97,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         accuracies_on_subjects['train'].append(np.max(train_acc.detach().cpu().numpy()))
         accuracies_on_subjects['test'].append(np.max(val_acc.detach().cpu().numpy()))
     return accuracies_on_subjects
+
 
 
 
