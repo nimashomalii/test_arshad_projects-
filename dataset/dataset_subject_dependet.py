@@ -76,7 +76,7 @@ class dataset(nn.Module) :
         idx = list(range(all_labels.shape[0]))
         random.shuffle(idx)
         all_data = all_data[idx , : , :]
-        all_labels= all_labels[idx, : , :]
+        all_labels= all_labels
         mean = all_data.mean()
         var  = all_data.var()
         if var ==0: 
@@ -84,4 +84,5 @@ class dataset(nn.Module) :
         std = torch.sqrt(var)
         all_data = (all_data - mean)/(std)
         return all_data , all_labels
+
 
