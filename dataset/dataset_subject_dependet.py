@@ -29,9 +29,6 @@ def slice_data(data, overlap, time_len):
 class dataset(nn.Module) : 
     def __init__(self  , overlap  , time_lenght    , emotion , label_method  ) :
         super().__init__()
-        self.train_person = list(range(23))
-        for i in self.test_person : 
-            self.train_person.remove(i)
         self.overlap = overlap
         self.time_lenght = time_lenght
         self.emotion = emotion
@@ -87,3 +84,4 @@ class dataset(nn.Module) :
         std = torch.sqrt(var)
         all_data = (all_data - mean)/(std)
         return all_data , all_labels
+
