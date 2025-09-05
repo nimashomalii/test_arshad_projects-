@@ -62,7 +62,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
             test_loader = DataLoader(test_dataset ,batch_size , shuffle=True )
             train_dataset = TensorDataset(x_train , y_train )
             train_loader = DataLoader(train_dataset , batch_size,shuffle=False )
-            Model = model([128, 64, output_dim])  # معماری دلخواه        
+            Model = model([1792, 64, output_dim])  # معماری دلخواه        
             #____trainer_______#
             trainer = Trainer(
                 model=Model,
@@ -97,6 +97,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         accuracies_on_subjects['train'].append(np.max(train_acc.detach().cpu().numpy()))
         accuracies_on_subjects['test'].append(np.max(val_acc.detach().cpu().numpy()))
     return accuracies_on_subjects
+
 
 
 
