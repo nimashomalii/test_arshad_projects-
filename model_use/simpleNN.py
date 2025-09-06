@@ -54,6 +54,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         'train' : [] , 
         'test' : []
     } 
+    person_num = 0 
     for x , y in data_for_subject_dependet(overlap , time_len , emotion , category , data_type , device ): 
         #Now create a model and train the model k fold cross validation and then the average of the results will be returned 
         fold_idx = 0 
@@ -73,12 +74,11 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
                 optimizer_cls=torch.optim.Adam,
                 lr=1e-3,
                 epochs=30,
-                checkpoint_path=f"eeg_checkpoint{fold_idx}.pth",
-                log_path=f"eeg_log{fold_idx}.json", 
+                checkpoint_path=f"eeg_checkpoint{fold_idx + person_num*5}.pth",
+                log_path=f"eeg_log{fold_idx + person_num*5}.json", 
             )
             #____fit_model_____#
             history =  trainer.fit()
-            
             if fold_idx ==0 : 
                 train_loss = np.array(history['train_loss'])
                 val_loss = np.array(history['val_loss'])
@@ -90,19 +90,15 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
                 train_acc += np.array(history['train_acc'])
                 val_acc += np.array(history['val_acc'])
             fold_idx +=1
-
+        person_num +=1
         train_acc  /=k
         train_loss /=k
         val_loss   /=k
         val_acc    /=k
-        print("train_acc fold:", train_acc)
-        print("val_acc fold:", val_acc)
 
         accuracies_on_subjects['train'].append(np.max(np.array(train_acc)))
         accuracies_on_subjects['test'].append(np.max(np.array(val_acc)))
     return accuracies_on_subjects
-
-
 
 
 
