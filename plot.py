@@ -43,9 +43,10 @@ def plot_subject_dependet(accuracies):
     # --- نمودار Loss ---
     plt.figure(figsize=(8, 6))
     plt.plot(epochs, accuracies['train'], label='Train Loss')
-    plt.plot(epochs, accuracies['val'], label='Test Loss')
+    plt.plot(epochs, accuracies['test'], label='Test Loss')
     plt.xlabel('subject')
     plt.ylabel('accuracies')
     plt.savefig("loss_plot.png")
+
 
 
