@@ -78,9 +78,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
             )
             #____fit_model_____#
             history =  trainer.fit()
-            print("train_acc fold:", history['train_acc'])
-            print("val_acc fold:", history['val_acc'])
-
+            
             if fold_idx ==0 : 
                 train_loss = np.array(history['train_loss'])
                 val_loss = np.array(history['val_loss'])
@@ -97,10 +95,13 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         train_loss /=k
         val_loss   /=k
         val_acc    /=k
+        print("train_acc fold:", train_acc)
+        print("val_acc fold:", val_acc)
 
         accuracies_on_subjects['train'].append(np.max(np.array(train_acc)))
         accuracies_on_subjects['test'].append(np.max(np.array(val_acc)))
     return accuracies_on_subjects
+
 
 
 
