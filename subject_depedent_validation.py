@@ -6,6 +6,7 @@ category  = sys.argv[3]
 k = int(sys.argv[4])
 model_name  = sys.argv[1]
 accuraceis = choose_model(model_name ,emotion , category, None , None  , subject_dependecy = 'subject_dependent') 
-print(accuracies['test'])
+print(accuraceis['test'])
 
 plot_subject_dependet(accuraceis)
+
