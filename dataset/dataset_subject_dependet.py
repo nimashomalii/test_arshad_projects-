@@ -76,7 +76,11 @@ class dataset(nn.Module) :
         idx = list(range(all_labels.shape[0]))
         random.shuffle(idx)
         all_data = all_data[idx , : , :]
-        all_labels= all_labels
+        all_labels= all_labels[idx]
+                # ✅ چک کردن لیبل‌ها
+        print("Unique labels in dataset:", torch.unique(all_labels))
+        print("Min label:", all_labels.min().item(), "Max label:", all_labels.max().item())
+        print("Number of samples:", all_labels.shape[0])
         mean = all_data.mean()
         var  = all_data.var()
         if var ==0: 
@@ -84,5 +88,6 @@ class dataset(nn.Module) :
         std = torch.sqrt(var)
         all_data = (all_data - mean)/(std)
         return all_data , all_labels
+
 
 
