@@ -90,14 +90,15 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
                 val_acc += history['val_acc']
             fold_idx +=1
 
-        train_acc = [x.item()/k for x in train_acc]
-        train_loss = [x.item()/k for x in train_loss]
-        val_loss   = [x.item()/k for x in val_loss]
-        val_acc    = [x.item()/k for x in val_acc]
+        train_acc = [x/k for x in train_acc]
+        train_loss = [x/k for x in train_loss]
+        val_loss   = [x/k for x in val_loss]
+        val_acc    = [x/k for x in val_acc]
 
         accuracies_on_subjects['train'].append(np.max(np.array(train_acc)))
         accuracies_on_subjects['test'].append(np.max(np.array(val_acc)))
     return accuracies_on_subjects
+
 
 
 
