@@ -41,7 +41,7 @@ class dataset(nn.Module) :
         self.variance =  1
         self.mean = 0
 
-    def extract (self , file_path , dtype, person , shuffle  ) : 
+    def extract (self , file_path , dtype, person , shuffle = False   ) : 
         base_extracted_dir = file_path['base_extracted_dir']
         label_file_path = file_path['labels_file']
         stimuli_files = file_path['stimuli_files']
@@ -89,6 +89,7 @@ class dataset(nn.Module) :
         std = torch.sqrt(var)
         all_data = (all_data - mean)/(std)
         return all_data , all_labels
+
 
 
 
