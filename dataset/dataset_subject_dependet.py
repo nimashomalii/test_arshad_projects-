@@ -41,7 +41,7 @@ class dataset(nn.Module) :
         self.variance =  1
         self.mean = 0
 
-    def extract (self , file_path , dtype, person  ) : 
+    def extract (self , file_path , dtype, person , shuffle  ) : 
         base_extracted_dir = file_path['base_extracted_dir']
         label_file_path = file_path['labels_file']
         stimuli_files = file_path['stimuli_files']
@@ -74,9 +74,10 @@ class dataset(nn.Module) :
             all_labels -= 1 
             all_labels= all_labels.long()
         idx = list(range(all_labels.shape[0]))
-        random.shuffle(idx)
-        all_data = all_data[idx , : , :]
-        all_labels= all_labels[idx]
+        if shuffle : 
+            random.shuffle(idx)
+            all_data = all_data[idx , : , :]
+            all_labels= all_labels[idx]
                 # ✅ چک کردن لیبل‌ها
         print("Unique labels in dataset:", torch.unique(all_labels))
         print("Min label:", all_labels.min().item(), "Max label:", all_labels.max().item())
@@ -88,6 +89,7 @@ class dataset(nn.Module) :
         std = torch.sqrt(var)
         all_data = (all_data - mean)/(std)
         return all_data , all_labels
+
 
 
 
