@@ -3,7 +3,7 @@ import json
 import sys
 from dataset.extractor import DataExtractor 
 from dataset.make_variable import dataset
-
+import random
 from  torch.utils.data import DataLoader , TensorDataset
 from dataset.dataset_subject_dependet import dataset as dataset_for_subjet_dependet
 import time
@@ -47,7 +47,7 @@ class data :
 
 
 
-def data_for_subject_dependet(overlap , time_len ,  emotion , label_method , data_type , device) :
+def data_for_subject_dependet(overlap , time_len ,  emotion , label_method , data_type , device , person , k_fold) :
     with open('dataset/config.json', 'r') as f:
         config = json.load(f)
     file_id = config['file_id']
@@ -55,11 +55,21 @@ def data_for_subject_dependet(overlap , time_len ,  emotion , label_method , dat
     extract_data = DataExtractor()
     extract_data.extract_data_file(file_id)
     sub_dep = dataset_for_subjet_dependet(overlap ,time_len , emotion , label_method)
-    for person in range(23) : 
-        x , y = sub_dep.extract(file_path, data_type , person  )
-        x = x.to(device)
-        y = y.to(device)
-        yield x , y
+    n = 23//k_fold
+    r = 23- n*k_fold 
+    test_clips = [] 
+    all_clips = list(range(23))
+    random.shuffle(all_clips)
+    for i in range(k_fold) : 
+        test_clips.append(all_clips[i*n:(i+1)*n])
+    for i in range(r) : 
+        test_clips[i].append(all_clips[n*k_fold + i])
 
+    for test_clip in test_clips: 
+        x_train , y_train , x_test , y_test = sub_dep.extract(file_path, data_type , person , test_clip )
+        x_train = x_train.to(device)
+        x_test = x_test.to(device)
+        y_train = y_train.to(device)
+        y_test = y_test.to(device)
+        yield (x_train , x_test , y_train , y_test)
     extract_data.clean_extracted_data()
-
