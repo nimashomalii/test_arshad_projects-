@@ -55,8 +55,8 @@ def data_for_subject_dependet(overlap , time_len ,  emotion , label_method , dat
     extract_data = DataExtractor()
     extract_data.extract_data_file(file_id)
     sub_dep = dataset_for_subjet_dependet(overlap ,time_len , emotion , label_method)
-    n = 23//k_fold
-    r = 23- n*k_fold 
+    n = 18//k_fold
+    r = 18- n*k_fold 
     test_clips = [] 
     all_clips = list(range(23))
     random.shuffle(all_clips)
