@@ -58,7 +58,7 @@ def data_for_subject_dependet(overlap , time_len ,  emotion , label_method , dat
     n = 18//k_fold
     r = 18- n*k_fold 
     test_clips = [] 
-    all_clips = list(range(23))
+    all_clips = list(range(18))
     random.shuffle(all_clips)
     for i in range(k_fold) : 
         test_clips.append(all_clips[i*n:(i+1)*n])
