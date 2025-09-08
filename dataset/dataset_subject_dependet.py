@@ -56,10 +56,11 @@ class dataset(nn.Module) :
 
         mean = train_data.mean()
         var  = train_data.var()
-        if var ==0: 
+        if var < 1e-4: 
             var = torch.tensor(1e-4 )
         std = torch.sqrt(var)
         train_data = (train_data - mean)/(std)
+        test_data = (test_data  - mean)/(std)
         return train_data , train_labels , test_data , test_labels 
 
 
