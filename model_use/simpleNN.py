@@ -10,7 +10,7 @@ import numpy as np
 
 #____Model______#
 def create_model(test_person , emotion,category , fold_idx ) : 
-    overlap = 0
+    overlap = 0.1
     time_len = 5
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     if category == 'binary'  :
@@ -48,26 +48,22 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         output_dim = 2 
     elif category == '5category' :
         output_dim = 5
-    batch_size = 64
+    batch_size = 128
     data_type = torch.float32
     accuracies_on_subjects  = {
         'train' : [] , 
         'test' : []
     } 
-    person_num = 0 
-    for x , y in data_for_subject_dependet(overlap , time_len , emotion , category , data_type , device ): 
-        #Now create a model and train the model k fold cross validation and then the average of the results will be returned 
-        print(f'''
-        now the person name is 
-
-                            {person_num}
-        ''')
-        fold_idx = 0 
-        for (x_train , x_test , y_train , y_test) in k_fold_data_segmentation(x ,y , k): 
+    for person_num in range(23) : 
+        fold_idx = 0
+        for (x_train , x_test , y_train , y_test) in data_for_subject_dependet(overlap , time_len , emotion , category , data_type , device ,person_num , k): 
+            print(f'''
+                        the size of the x_train is : {x_train.shape[0]}
+            ''')
             test_dataset = TensorDataset(x_test , y_test)
             test_loader = DataLoader(test_dataset ,batch_size , shuffle=True )
             train_dataset = TensorDataset(x_train , y_train )
-            train_loader = DataLoader(train_dataset , batch_size,shuffle=False )
+            train_loader = DataLoader(train_dataset , batch_size,shuffle=True )
             Model = model([1792, 64, output_dim])  # معماری دلخواه        
             #____trainer_______#
             trainer = Trainer(
@@ -104,7 +100,6 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         accuracies_on_subjects['train'].append(np.max(np.array(train_acc)))
         accuracies_on_subjects['test'].append(np.max(np.array(val_acc)))
     return accuracies_on_subjects
-
 
 
 
