@@ -41,17 +41,32 @@ class dataset(nn.Module) :
         self.variance =  1
         self.mean = 0
 
-    def extract (self , file_path , dtype, person , shuffle = False   ) : 
+    def extract (self , file_path , dtype, person , test_clips ) : 
         base_extracted_dir = file_path['base_extracted_dir']
         label_file_path = file_path['labels_file']
         stimuli_files = file_path['stimuli_files']
         baseline_data = extract_and_tensor(base_extracted_dir, dtype) #(23, 18 , 7808, 14)
         labels = extract_and_tensor(label_file_path, dtype)
 
+        train_clips = list(range(18))
+        for test_clip_num in test_clips : 
+            train_clips.remove(test_clip_num)
+        train_data , train_labels = self.make_data(train_clips, person , dtype, stimuli_files, baseline_data ,labels  )
+        test_data , test_labels = self.make_data(test_clips, person , dtype, stimuli_files, baseline_data ,labels  )
+
+        mean = train_data.mean()
+        var  = train_data.var()
+        if var ==0: 
+            var = torch.tensor(1e-4 )
+        std = torch.sqrt(var)
+        train_data = (train_data - mean)/(std)
+        return train_data , train_labels , test_data , test_labels 
+
+
+    def make_data(self , clip_numbers, person , dtype, stimuli_files, baseline_data ,labels  ) : 
         all_train_data_slices = []
         all_train_label_slices = []
-
-        for i in range(18):
+        for i in clip_numbers:
             stimuli_data = extract_and_tensor(stimuli_files[i], dtype=dtype)
             person_stimuli = stimuli_data[person, :, :]
             sliced_stimuli = slice_data(person_stimuli, self.overlap, self.time_lenght)
@@ -66,31 +81,14 @@ class dataset(nn.Module) :
                 sliced_labels = torch.full((num_slices,), current_label, dtype=torch.long)
                 all_train_label_slices.append(sliced_labels)
 
-        all_data = torch.cat(all_train_data_slices, dim=0) # (batch , time_len , 14)
-        all_labels = torch.cat(all_train_label_slices, dim=0) #(batch,)
+        train_data = torch.cat(all_train_data_slices, dim=0) # (batch , time_len , 14)
+        train_labels = torch.cat(all_train_label_slices, dim=0) #(batch,)
         if self.label_method == 'binary' : 
-            all_labels = (all_labels > 2).long() 
+            train_labels = (train_labels > 2).long() 
         else : 
-            all_labels -= 1 
-            all_labels= all_labels.long()
-        idx = list(range(all_labels.shape[0]))
-        if shuffle : 
-            random.shuffle(idx)
-            all_data = all_data[idx , : , :]
-            all_labels= all_labels[idx]
-                # ✅ چک کردن لیبل‌ها
-        print("Unique labels in dataset:", torch.unique(all_labels))
-        print("Min label:", all_labels.min().item(), "Max label:", all_labels.max().item())
-        print("Number of samples:", all_labels.shape[0])
-        mean = all_data.mean()
-        var  = all_data.var()
-        if var ==0: 
-            var = torch.tensor(1e-4 )
-        std = torch.sqrt(var)
-        all_data = (all_data - mean)/(std)
-        return all_data , all_labels
-
-
+            train_labels -= 1 
+            train_labels= train_labels.long()
+        return train_data , train_labels
 
 
 
